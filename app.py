@@ -3,9 +3,13 @@ from joblib import load
 import pandas as pd
 
 # importando a classe Transformador para que o modelo funcione corretamente
+from utils import Transformador
+
+# Cor de fundo do listbox
+st.markdown('<style> div[role = "listbox"] ul{background-color: #eee1f9e}; </style>', unsafe_allow_html = True)
+
 
 # Função para avaliar o crédito utilizando o modelo de ML
-
 def avaliar_mau(dict_respostas):
     # carregando o modelo
     modelo = load('objetos/modelo.joblib')
@@ -58,11 +62,11 @@ with expander_pessoal:
 
     dict_respostas['Grau_Escolaridade'] = col3_form.selectbox('Qual o grau de escolaridade?', lista_campos['Grau_Escolaridade'])
     dict_respostas['Estado_Civil'] = col3_form.selectbox('Qual o estado civil?', lista_campos['Estado_Civil'])
-    dict_respostas['Tem_Carro'] = col3_form.selectbox('Tem carro?', ['Sim', 'Não'])
+    dict_respostas['Tem_Carro'] = 1 if col3_form.selectbox('Tem carro?', ['Sim', 'Não']) == 'Sim' else 0
 
-    dict_respostas['Tem_telefone_fixo'] = col4_form.selectbox('Tem telefone fixo?', ['Sim', 'Não'])
-    dict_respostas['Tem_email'] = col4_form.selectbox('Tem email?', ['Sim', 'Não'])
-    dict_respostas['Idade'] = col4_form.slider('Qual a idade?', min_value = 0, max_value = 100, step = 1)
+    dict_respostas['Tem_telefone_fixo'] = 1 if col4_form.selectbox('Tem telefone fixo?', ['Sim', 'Não']) == 'Sim' else 0
+    dict_respostas['Tem_email'] = 1 if col4_form.selectbox('Tem email?', ['Sim', 'Não']) == 'Sim' else 0
+    dict_respostas['Idade'] = col4_form.slider('Qual a idade?', help = 'Podemos mover a barra usando as setas do teclado', min_value = 0, max_value = 100, step = 1)
     
 with expander_familia:
     col5_form, col6_form = st.beta_columns(2)
@@ -71,12 +75,12 @@ with expander_familia:
     dict_respostas['Tem_Casa_Propria'] = 1 if col5_form.selectbox('Tem casa própria?', ['Sim', 'Não']) == 'Sim' else 0
 
     dict_respostas['Tamanho_Familia'] = col6_form.slider('Qual o tamanho da família?', min_value = 1, max_value = 20, step = 1)
-    dict_respostas['Qtd_Filhos'] = col6_form.slider('Quantos filhos?', min_value = 0, max_value = 20, step = 1)
+    dict_respostas['Qtd_Filhos'] = col6_form.slider('Quantos filhos?', help = 'Podemos mover a barra usando as setas do teclado', min_value = 0, max_value = 20, step = 1)
 
 # Criando um botão para enviar o formulário
 if st.button('Avaliar crédito'):
     if avaliar_mau(dict_respostas):
         st.error('Crédito negado')
     else:
-        st.succes('Crédito aprovado')
+        st.success('Crédito aprovado')
 
